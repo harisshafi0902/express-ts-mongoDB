@@ -1,0 +1,131 @@
+openapi: 3.0.3
+info:
+  title: REST API using express, ZOD, MySQL, SWAGGER
+  # description: Optional multiline or single-line description in HTML.
+  version: 0.1.9
+servers:
+  - url: http://localhost:5005/api
+paths:
+  /users:
+    post:
+      tags:
+        - Signup-API
+      summary: Add a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserEntity'
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserEntity'
+        500:
+          description: Internal server error
+
+  /users/{id}:
+    get:
+      tags:
+        - Get-User-API
+      summary: Get a user by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserEntity'
+        404:
+          description: User not found
+        500:
+          description: Internal server error
+
+    patch:
+      tags:
+        - Update-User-API
+      summary: Update a user by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserEntity'
+      responses:
+        200:
+          description: Success
+        404:
+          description: User not found
+        500:
+          description: Internal server error
+
+    delete:
+      tags:
+        - Delete-User-API
+      summary: Delete a user by ID
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        200:
+          description: Success
+        404:
+          description: User not found
+        500:
+          description: Internal server error
+
+  /users/getall:
+    get:
+      tags:
+        - Get-All-User-API
+      summary: Get all user on Execution
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserEntity'
+        404:
+          description: User not found
+        500:
+          description: Internal server error
+
+components:
+  schemas:
+    UserEntity:
+      type: object
+      properties:
+        first_name:
+          type: string
+          example: 'Haris'
+        last_name:
+          type: string
+          example: 'Shafi'
+        email:
+          type: string
+          example: 'theharisshafi@gmail.com'
+        password:
+          type: string
+          example: 'haris123'

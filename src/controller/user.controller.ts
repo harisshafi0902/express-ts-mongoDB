@@ -1,13 +1,17 @@
+import { createUser } from './../validations/user.validation';
 import { NextFunction, Request, Response, Router } from 'express';
 import { IController } from '@/interface/controller.interface';
 import userModel from '@/model/user.model';
 import ResponseStatus from '@/helper/response';
 import { validate } from '@/middleware/validate.middleware';
 import { createUser as validateUser, updateUser } from '@/validations/user.validation';
-
+import { any, string } from 'zod';
+import { SendMailDTO } from '@/dto/sendMailDTO';
+import { SendEmail } from '../decorators/sendEmailDecorator';
 export default class UserController implements IController {
   public path = '/users';
   public router = Router();
+  mailService: any;
 
   constructor() {
     this.initializeRoutes();
@@ -56,12 +60,16 @@ export default class UserController implements IController {
       });
     }
   }
-
+  
+  @SendEmail()
   private async createUser(req: Request, res: Response, next: NextFunction): Promise<Response> {
     try {
+      console.log('inside create');
       const user = req.body;
       const result = await userModel.createUser(user);
       const [getUser] = await userModel.getUser(result?.insertId);
+
+      console.log('before decorator');
       return res.status(ResponseStatus.CREATED).json({
         status: 'success',
         user: getUser,
@@ -73,6 +81,23 @@ export default class UserController implements IController {
       });
     }
   }
+  // private async createUser(req: Request, res: Response, next: NextFunction): Promise<Response> {
+  //   try {
+  //     const user = req.body;
+  //     const result = await userModel.createUser(user);
+  //     const [getUser] = await userModel.getUser(result?.insertId);
+
+  //     return res.status(ResponseStatus.CREATED).json({
+  //       status: 'success',
+  //       user: getUser,
+  //     });
+  //   } catch (er: any) {
+  //     return res.status(ResponseStatus.SERVER_ERROR).json({
+  //       status: 'failed',
+  //       error: er.message,
+  //     });
+  //   }
+  // }
 
   private async updateUser(req: Request, res: Response, next: NextFunction): Promise<Response> {
     try {
@@ -113,3 +138,19 @@ export default class UserController implements IController {
     }
   }
 }
+
+// function sendMail(
+//   from: any,
+//   any: (params?: import('zod').RawCreateParams) => import('zod').ZodAny,
+//   email: any,
+//   any1: (params?: import('zod').RawCreateParams) => import('zod').ZodAny,
+//   subject: any,
+//   any2: (params?: import('zod').RawCreateParams) => import('zod').ZodAny,
+//   arg6: any,
+// ) {
+//   throw new Error('Function not implemented.');
+// }
+
+// function signUpHtml(email: any): (params?: import('zod').RawCreateParams) => import('zod').ZodAny {
+//   throw new Error('Function not implemented.');
+// }

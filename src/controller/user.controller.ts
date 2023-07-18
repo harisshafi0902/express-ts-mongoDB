@@ -50,7 +50,7 @@ export default class UserController implements IController {
     try {
       const users = await userModel.getAllUsers();
       return res.status(ResponseStatus.OK).json({
-        status: 'success',
+        status: 'sucess',
         users: users,
       });
     } catch (er: any) {
